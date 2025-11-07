@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>音乐库</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        :root {
+            --font-main: 'Noto Sans SC', 'Segoe UI', Arial, sans-serif;
+            --accent-color: #0F52BA;
+            --accent-color-hover: #00318C;
+            --danger-color: #D32F2F;
+            --download-color: #27ae60;
+
+            --bg-color-dark: #191A1C;
+            --sidebar-bg: rgba(17, 18, 19, 0.75);
+            --main-bg: rgba(25, 26, 28, 0.6);
+            --player-bg: rgba(17, 18, 19, 0.75);
+
+            --text-color-primary: #F5F5F5;
+            --text-color-secondary: #A0A0A0;
+
+            --component-bg: rgba(44, 45, 47, 0.7);
+            --hover-bg: rgba(58, 59, 61, 0.8);
+            --border-color: rgba(80, 80, 80, 0.5);
+        }
+
+        .light-mode {
+            --accent-color: #0F52BA;
+            --accent-color-hover: #0039A6;
+            --download-color: #2ecc71;
+            --danger-color: #c0392b;
+
+            --bg-color-dark: #F4F6F8;
+            --sidebar-bg: rgba(255, 255, 255, 0.7);
+            --main-bg: rgba(244, 246, 248, 0.65);
+            --player-bg: rgba(255, 255, 255, 0.7);
+
+            --text-color-primary: #121212;
+            --text-color-secondary: #6B7280;
+
+            --component-bg: rgba(255, 255, 255, 0.6);
+            --hover-bg: rgba(234, 236, 239, 0.7);
+            --border-color: rgba(200, 200, 200, 0.6);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--hover-bg);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-color);
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--text-color-primary);
+            background-color: var(--bg-color-dark);
+            overflow: hidden;
+            transition: background-color 0.3s;
+        }
+
+        @keyframes gradient-animation {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            grid-template-rows: 1fr auto;
+            grid-template-areas: "sidebar main" "player player";
+            height: 100vh;
+            width: 100vw;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient-animation 15s ease infinite;
+        }
+
+        .sidebar {
+            grid-area: sidebar;
+            background-color: var(--sidebar-bg);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border-color);
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s, border-color 0.3s;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .sidebar h1 {
+            color: var(--text-color-primary);
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar nav ul {
+            list-style: none;
+        }
+
+        .sidebar nav a {
+            color: var(--text-color-secondary);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar nav a:hover {
+            color: var(--text-color-primary);
+            background-color: var(--hover-bg);
+        }
+
+        .sidebar nav a.active {
+            color: var(--accent-color);
+            font-weight: 700;
+            background-color: var(--hover-bg);
+        }
+
+        .main-content {
+            grid-area: main;
+            overflow-y: auto;
+            padding: 24px 32px;
+            background-color: var(--main-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .search-area {
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .search-area i.fa-search {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-color-secondary);
+        }
+
+        .search-area input {
+            background-color: var(--component-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color-primary);
+            width: 100%;
+            padding: 12px 20px 12px 50px;
+            font-size: 1em;
+            border-radius: 50px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .search-area input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 10px rgba(15, 82, 186, 0.2);
+        }
+
+        .song-list-header,
+        .song-item {
+            display: grid;
+            grid-template-columns: 40px 3fr 2fr 2fr 40px 40px;
+            align-items: center;
+            padding: 10px 15px;
+            gap: 15px;
+        }
+
+        #stats-top-tracks .song-item,
+        #stats-top-artists .song-item {
+            grid-template-columns: 40px 3fr 2fr 1fr 40px;
+        }
+
+        .song-list-header {
+            color: var(--text-color-secondary);
+            font-size: 0.8em;
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--component-bg);
+            border-radius: 8px 8px 0 0;
+            margin-top: 10px;
+        }
+
+        .song-item {
+            border-radius: 8px;
+            transition: background-color 0.2s;
+            cursor: pointer;
+            font-size: 0.9em;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .song-list>.song-item:last-child {
+            border-bottom: none;
+        }
+
+        .song-item:hover {
+            background-color: var(--hover-bg);
+        }
+
+        .song-item.current {
+            background-color: var(--hover-bg);
+        }
+
+        .song-item.current .song-title>span:first-child {
+            color: var(--accent-color);
+        }
+
+        .song-item .song-title {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .song-item .song-title .error-msg {
+            font-size: 0.8em;
+            color: var(--danger-color);
+            margin-top: 4px;
+        }
+
+        .action-btn {
+            color: var(--text-color-secondary);
+            cursor: pointer;
+            transition: color 0.2s, transform 0.2s;
+            text-align: center;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .fav-btn.favourited {
+            color: var(--accent-color);
+        }
+
+        .download-btn:hover {
+            color: var(--download-color);
+        }
+
+        .delete-btn:hover {
+            color: var(--danger-color);
+        }
+
+        .now-playing-bar {
+            grid-area: player;
+            background-color: var(--player-bg);
+            border-top: 1px solid var(--border-color);
+            padding: 15px 30px;
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .song-info-bar {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            min-width: 0;
+        }
+
+        .song-info-bar img {
+            width: 56px;
+            height: 56px;
+            border-radius: 8px;
+            object-fit: cover;
+            background-color: var(--hover-bg);
+        }
+
+        .song-info-bar .fav-btn {
+            font-size: 1.2em;
+        }
+
+        .song-info-bar div {
+            overflow: hidden;
+        }
+
+        .song-info-bar div h3,
+        .song-info-bar div p {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .player-controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .control-buttons {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 12px;
+        }
+
+        #playPauseBtn {
+            background-color: var(--text-color-primary);
+            color: var(--player-bg);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .light-mode #playPauseBtn {
+            color: #FFFFFF;
+            background-color: #121212;
+        }
+
+        #playPauseBtn:hover {
+            transform: scale(1.1);
+        }
+
+        .control-btn {
+            background: none;
+            border: none;
+            color: var(--text-color-secondary);
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .control-btn:hover {
+            color: var(--text-color-primary);
+            transform: scale(1.15);
+        }
+
+        .control-btn.active {
+            color: var(--accent-color);
+        }
+
+        .progress-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .progress-bar {
+            flex-grow: 1;
+            height: 6px;
+            background-color: var(--hover-bg);
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .progress {
+            height: 100%;
+            width: 0%;
+            background-color: var(--accent-color);
+            border-radius: 3px;
+        }
+
+        .time-display span {
+            font-size: 0.75em;
+            color: var(--text-color-secondary);
+        }
+
+        .extra-controls {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .volume-area {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 120px;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            background-color: var(--hover-bg);
+            border-radius: 3px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background-color: var(--text-color-primary);
+            border-radius: 50%;
+            transition: background-color 0.3s;
+        }
+
+        input[type="range"]:hover::-webkit-slider-thumb {
+            background-color: var(--accent-color);
+        }
+
+        .sidebar .theme-switcher {
+            margin-top: auto;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            background-color: var(--component-bg);
+            color: var(--text-color-secondary);
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .sidebar .theme-switcher:hover {
+            color: var(--text-color-primary);
+            background-color: var(--hover-bg);
+        }
+
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .list-section h2,
+        .view>h2 {
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background-color: var(--component-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card h3 {
+            color: var(--text-color-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .stat-card p {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .pagination-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 0;
+            gap: 8px;
+            user-select: none;
+        }
+
+        .page-btn {
+            background-color: var(--component-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color-secondary);
+            padding: 8px 14px;
+            min-width: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .page-btn:hover {
+            background-color: var(--hover-bg);
+            color: var(--text-color-primary);
+            border-color: var(--accent-color);
+        }
+
+        .page-btn.active {
+            background-color: var(--accent-color);
+            color: #FFFFFF;
+            border-color: var(--accent-color);
+            font-weight: 700;
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .action-button {
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            border-radius: 20px;
+            border: none;
+            background: var(--accent-color);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            min-width: 120px;
+        }
+    </style>
+</head>
+
+<body class="dark-mode">
+
+    <audio id="audioPlayer"></audio>
+
+    <div class="app-container">
+        <aside class="sidebar">
+            <h1><i class="fas fa-headphones-alt"></i> Music</h1>
+            <nav>
+                <ul>
+                    <li><a href="#" class="nav-link active" data-view="discover-view"><i
+                                class="fas fa-compass"></i>发现音乐</a></li>
+                    <!-- [] 本地音乐库的导航链接 -->
+                    <li><a href="#" class="nav-link" data-view="local-view"><i class="fas fa-hdd"></i>我的本地</a></li>
+                    <li><a href="#" class="nav-link" data-view="favourites-view"><i class="fas fa-heart"></i>我的收藏</a>
+                    </li>
+                    <li><a href="#" class="nav-link" data-view="history-view"><i class="fas fa-history"></i>播放历史</a>
+                    </li>
+                    <li><a href="#" class="nav-link" data-view="stats-view"><i class="fas fa-chart-pie"></i>听歌统计</a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="theme-switcher" id="themeToggle"><i class="fas fa-sun"></i> <span>切换模式</span></div>
+        </aside>
+
+        <main class="main-content">
+            <div id="discover-view" class="view active">
+                <div class="search-area">
+                    <i class="fas fa-search"></i>
+                    <input type="search" id="searchInput" placeholder="搜索歌曲、歌手...">
+                </div>
+                <button id="loadOnlineBtn" class="action-button">
+                    <i class="fas fa-satellite-dish"></i> 探索雷达
+                </button>
+                <div id="song-list-container" class="song-list"></div>
+                <div id="pagination-discover" class="pagination-controls"></div>
+            </div>
+
+            <!-- [] 本地音乐库的视图 -->
+            <div id="local-view" class="view">
+                <h2><i class="fas fa-hdd"></i> 我的本地音乐</h2>
+                <button id="addLocalFilesBtn" class="action-button">
+                    <i class="fas fa-folder-plus"></i> 添加本地音乐
+                </button>
+                <input type="file" id="localFileInput" multiple accept="audio/*" style="display: none;">
+                <div id="local-list-container" class="song-list"></div>
+                <div id="pagination-local" class="pagination-controls"></div>
+            </div>
+
+            <div id="favourites-view" class="view">
+                <h2><i class="fas fa-heart"></i> 我的收藏</h2>
+                <div id="favourites-list-container" class="song-list"></div>
+                <div id="pagination-favourites" class="pagination-controls"></div>
+            </div>
+            <div id="history-view" class="view">
+                <h2><i class="fas fa-history"></i> 播放历史</h2>
+                <div id="history-list-container" class="song-list"></div>
+                <div id="pagination-history" class="pagination-controls"></div>
+            </div>
+            <div id="stats-view" class="view">
+                <h2><i class="fas fa-chart-pie"></i> 听歌统计</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>总播放量</h3>
+                        <p id="stats-total-plays">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>不同歌曲</h3>
+                        <p id="stats-unique-tracks">0</p>
+                    </div>
+                </div>
+                <div class="list-section">
+                    <h2>播放最多的歌曲</h2>
+                    <div id="stats-top-tracks" class="song-list"></div>
+                </div>
+                <div class="list-section" style="margin-top: 30px;">
+                    <h2>最常听的歌手</h2>
+                    <div id="stats-top-artists" class="song-list"></div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="now-playing-bar">
+            <div class="song-info-bar">
+                <img id="bar-album-art" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
+                <div>
+                    <h3 id="bar-song-title">--</h3>
+                    <p id="bar-song-artist">--</p>
+                </div>
+                <i class="action-btn fav-btn far fa-heart" id="bar-fav-btn" title="添加到我的收藏"></i>
+            </div>
+            <div class="player-controls">
+                <div class="control-buttons">
+                    <button class="control-btn" id="shuffleBtn" title="随机"><i class="fas fa-random"></i></button>
+                    <button class="control-btn" id="prevBtn" title="上一曲"><i class="fas fa-backward-step"></i></button>
+                    <button id="playPauseBtn" title="播放"><i class="fas fa-play"></i></button>
+                    <button class="control-btn" id="nextBtn" title="下一曲"><i class="fas fa-forward-step"></i></button>
+                    <button class="control-btn" id="repeatBtn" title="循环"><i class="fas fa-redo"></i></button>
+                </div>
+                <div class="progress-area">
+                    <span class="time-display" id="currentTime">0:00</span>
+                    <div class="progress-bar" id="progressBar">
+                        <div class="progress" id="progress"></div>
+                    </div>
+                    <span class="time-display" id="totalDuration">0:00</span>
+                </div>
+            </div>
+            <div class="extra-controls">
+                <div class="volume-area"><i class="fas fa-volume-down"></i><input type="range" id="volumeSlider" min="0"
+                        max="1" step="0.01" value="0.8"></div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // [] IndexedDB 帮助对象
+            const idbHelper = {
+                db: null,
+                init() {
+                    return new Promise((resolve, reject) => {
+                        const request = indexedDB.open("musicDB", 1);
+                        request.onupgradeneeded = (event) => {
+                            this.db = event.target.result;
+                            if (!this.db.objectStoreNames.contains('songs')) {
+                                this.db.createObjectStore('songs', { keyPath: 'id' });
+                            }
+                        };
+                        request.onsuccess = (event) => {
+                            this.db = event.target.result;
+                            resolve(this.db);
+                        };
+                        request.onerror = (event) => reject("IndexedDB error: " + event.target.errorCode);
+                    });
+                },
+                addSong(song) {
+                    return new Promise((resolve, reject) => {
+                        const transaction = this.db.transaction(['songs'], 'readwrite');
+                        const store = transaction.objectStore('songs');
+                        const request = store.put(song);
+                        request.onsuccess = () => resolve();
+                        request.onerror = (event) => reject(event.target.error);
+                    });
+                },
+                getSongs() {
+                    return new Promise((resolve, reject) => {
+                        const transaction = this.db.transaction(['songs'], 'readonly');
+                        const store = transaction.objectStore('songs');
+                        const request = store.getAll();
+                        request.onsuccess = () => resolve(request.result);
+                        request.onerror = (event) => reject(event.target.error);
+                    });
+                },
+                deleteSong(id) {
+                    return new Promise((resolve, reject) => {
+                        const transaction = this.db.transaction(['songs'], 'readwrite');
+                        const store = transaction.objectStore('songs');
+                        const request = store.delete(id);
+                        request.onsuccess = () => resolve();
+                        request.onerror = (event) => reject(event.target.error);
+                    });
+                },
+            };
+
+            const dom = {
+                audioPlayer: document.getElementById('audioPlayer'),
+                themeToggle: document.getElementById('themeToggle'),
+                mainContent: document.querySelector('.main-content'),
+                songListContainer: document.getElementById('song-list-container'),
+                favouritesListContainer: document.getElementById('favourites-list-container'),
+                historyListContainer: document.getElementById('history-list-container'),
+                localListContainer: document.getElementById('local-list-container'), // 
+                paginationDiscover: document.getElementById('pagination-discover'),
+                paginationFavourites: document.getElementById('pagination-favourites'),
+                paginationHistory: document.getElementById('pagination-history'),
+                paginationLocal: document.getElementById('pagination-local'), // 
+                searchInput: document.getElementById('searchInput'),
+                loadOnlineBtn: document.getElementById('loadOnlineBtn'),
+                addLocalFilesBtn: document.getElementById('addLocalFilesBtn'),
+                localFileInput: document.getElementById('localFileInput'), // 
+                barAlbumArt: document.getElementById('bar-album-art'),
+                barSongTitle: document.getElementById('bar-song-title'),
+                barSongArtist: document.getElementById('bar-song-artist'),
+                barFavBtn: document.getElementById('bar-fav-btn'),
+                playPauseBtn: document.getElementById('playPauseBtn'),
+                prevBtn: document.getElementById('prevBtn'),
+                nextBtn: document.getElementById('nextBtn'),
+                shuffleBtn: document.getElementById('shuffleBtn'),
+                repeatBtn: document.getElementById('repeatBtn'),
+                currentTime: document.getElementById('currentTime'),
+                totalDuration: document.getElementById('totalDuration'),
+                progressBar: document.getElementById('progressBar'),
+                progress: document.getElementById('progress'),
+                volumeSlider: document.getElementById('volumeSlider'),
+                statsTotalPlays: document.getElementById('stats-total-plays'),
+                statsUniqueTracks: document.getElementById('stats-unique-tracks'),
+                statsTopTracks: document.getElementById('stats-top-tracks'),
+                statsTopArtists: document.getElementById('stats-top-artists'),
+            };
+
+            const API = {
+                getList: async (keyword) => {
+                    const url = `https://music-api.gdstudio.xyz/api.php?types=search&source=netease,kuwo&name=${encodeURIComponent(keyword)}&count=100`;
+                    const response = await fetch(url);
+                    if (!response.ok) throw new Error('API request failed');
+                    const data = await response.json();
+                    if (!Array.isArray(data)) throw new Error('Invalid API response');
+                    return data.map(song => ({
+                        id: `${song.source}_${song.id}`, name: song.name,
+                        artists: [{ name: song.artist.join(' / ') }], album: song.album || '未知专辑',
+                        source: song.source, lyric_id: song.lyric_id,
+                        pic: `https://picsum.photos/400/400?random=${encodeURIComponent(song.name)}`
+                    }));
+                },
+                getSongUrl: (song) => `https://music-api.gdstudio.xyz/api.php?types=url&id=${song.id.split('_')[1]}&source=${song.source}&br=320000`
+            };
+
+            const state = {
+                discoverPlaylist: [], localPlaylist: [], currentPlaylist: [], currentTrackIndex: -1,
+                isPlaying: false, isShuffle: false, repeatMode: 'none',
+                history: [], favourites: [], itemsPerPage: 20,
+                pagination: { discover: 1, favourites: 1, history: 1, local: 1 },
+                keywords: ['热门', '华语', '流行', '摇滚', '民谣', '电子', '说唱', '经典老歌', '纯音乐', 'ACG'],
+                lastKeyword: null, currentBlobUrl: null,
+            };
+
+            async function init() {
+                try {
+                    await idbHelper.init();
+                    loadStateFromLocalStorage();
+                    setupEventListeners();
+                    await loadLocalSongs(); // 先加载本地歌曲
+                    renderAllViews();
+                    showView('discover-view');
+                    fetchOnlineMusic();
+                } catch (error) {
+                    console.error("初始化失败:", error);
+                    alert("无法初始化数据库，本地功能将不可用。");
+                }
+            }
+
+            function setupEventListeners() {
+                document.querySelectorAll('.nav-link').forEach(link => link.addEventListener('click', e => { e.preventDefault(); showView(e.currentTarget.dataset.view); }));
+                dom.themeToggle.addEventListener('click', () => {
+                    const isLight = document.body.classList.toggle('light-mode');
+                    document.body.classList.toggle('dark-mode', !isLight);
+                    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+                });
+                dom.searchInput.addEventListener('keypress', e => { if (e.key === 'Enter' && e.target.value.trim()) fetchAndDisplaySearchResults(e.target.value.trim()); });
+                dom.loadOnlineBtn.addEventListener('click', () => fetchOnlineMusic());
+                dom.addLocalFilesBtn.addEventListener('click', () => dom.localFileInput.click());
+                dom.localFileInput.addEventListener('change', processLocalFiles);
+                dom.playPauseBtn.addEventListener('click', togglePlayPause);
+                dom.barFavBtn.addEventListener('click', () => { if (dom.barFavBtn.dataset.songId) toggleFavourite(dom.barFavBtn.dataset.songId); });
+                dom.nextBtn.addEventListener('click', playNext);
+                dom.prevBtn.addEventListener('click', playPrevious);
+                dom.shuffleBtn.addEventListener('click', toggleShuffle);
+                dom.repeatBtn.addEventListener('click', toggleRepeat);
+                dom.volumeSlider.addEventListener('input', e => dom.audioPlayer.volume = e.target.value);
+                dom.progressBar.addEventListener('click', seek);
+                dom.audioPlayer.addEventListener('timeupdate', updateProgress);
+                dom.audioPlayer.addEventListener('loadedmetadata', () => dom.totalDuration.textContent = formatTime(dom.audioPlayer.duration));
+                dom.audioPlayer.addEventListener('ended', handleSongEnd);
+                dom.audioPlayer.addEventListener('play', () => updatePlayPauseIcon(true));
+                dom.audioPlayer.addEventListener('pause', () => updatePlayPauseIcon(false));
+                dom.mainContent.addEventListener('click', handleMainContentClick);
+            }
+
+            function handleMainContentClick(e) {
+                const songItem = e.target.closest('.song-item');
+                const pageBtn = e.target.closest('.page-btn');
+                const actionBtn = e.target.closest('.action-btn');
+
+                if (actionBtn) {
+                    const songId = actionBtn.dataset.songId;
+                    const allSongs = [...state.discoverPlaylist, ...state.localPlaylist, ...state.history, ...state.favourites];
+                    const uniqueSongs = Array.from(new Map(allSongs.map(item => [item.id, item])).values());
+                    const song = uniqueSongs.find(s => s.id.toString() === songId.toString());
+
+                    if (actionBtn.classList.contains('fav-btn')) { toggleFavourite(songId); return; }
+                    if (actionBtn.classList.contains('download-btn')) { downloadSong(song, actionBtn); return; }
+                    if (actionBtn.classList.contains('delete-btn')) { deleteLocalSong(songId); return; }
+                }
+
+                if (songItem) {
+                    const context = songItem.dataset.context;
+                    const index = parseInt(songItem.dataset.index, 10);
+                    state.currentPlaylist = getPlaylistByContext(context);
+                    playSong(index);
+                    return;
+                }
+                if (pageBtn && !pageBtn.disabled) {
+                    const context = pageBtn.parentElement.dataset.context;
+                    state.pagination[context] = parseInt(pageBtn.dataset.page, 10);
+                    renderViewByContext(context);
+                }
+            }
+
+            function getPlaylistByContext(context) {
+                switch (context) {
+                    case 'discover': return state.discoverPlaylist;
+                    case 'favourites': return state.favourites;
+                    case 'history': return state.history;
+                    case 'local': return state.localPlaylist;
+                    default: return [];
+                }
+            }
+
+            function renderViewByContext(context) {
+                const playlist = getPlaylistByContext(context);
+                const container = getListContainerByContext(context);
+                renderPlaylist(playlist, container, context);
+            }
+
+            function showView(viewId) {
+                document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+                document.getElementById(viewId)?.classList.add('active');
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                document.querySelector(`.nav-link[data-view="${viewId}"]`)?.classList.add('active');
+                if (viewId === 'local-view') {
+                    renderPlaylist(state.localPlaylist, dom.localListContainer, 'local');
+                }
+            }
+
+            function renderAllViews() {
+                renderPlaylist(state.discoverPlaylist, dom.songListContainer, 'discover');
+                renderPlaylist(state.localPlaylist, dom.localListContainer, 'local');
+                renderFavourites();
+                renderHistory();
+                updateAndRenderStats();
+            }
+
+            function getListContainerByContext(context) {
+                switch (context) {
+                    case 'discover': return dom.songListContainer;
+                    case 'favourites': return dom.favouritesListContainer;
+                    case 'history': return dom.historyListContainer;
+                    case 'local': return dom.localListContainer;
+                    default: return null;
+                }
+            }
+
+            function renderPlaylist(fullPlaylist, container, context) {
+                const currentPage = state.pagination[context] || 1;
+                const totalItems = fullPlaylist.length;
+                if (!container) return;
+
+                if (totalItems === 0) {
+                    container.innerHTML = `<p style="padding: 15px;">列表为空。</p>`;
+                    getPaginationContainer(context).innerHTML = '';
+                    return;
+                }
+                const totalPages = Math.ceil(totalItems / state.itemsPerPage);
+                const startIndex = (currentPage - 1) * state.itemsPerPage;
+                const endIndex = startIndex + state.itemsPerPage;
+                const paginatedItems = fullPlaylist.slice(startIndex, endIndex);
+
+                let header = `<div class="song-list-header">
+                    <span>#</span><span>歌曲</span><span>歌手</span><span>专辑</span><span></span><span></span>
+                </div>`;
+                container.innerHTML = header + paginatedItems.map((song, index) => {
+                    const originalIndex = startIndex + index;
+                    const isLocal = context === 'local';
+                    const actionIcon = isLocal
+                        ? `<i class="action-btn delete-btn fas fa-trash" data-song-id="${song.id}" title="从本地库删除"></i>`
+                        : `<i class="action-btn download-btn fas fa-download" data-song-id="${song.id}" title="下载到本地库"></i>`;
+
+                    return `
+                        <div class="song-item" data-index="${originalIndex}" data-context="${context}">
+                            <span class="song-index">${originalIndex + 1}</span>
+                            <div class="song-title">
+                                <span>${song.name}</span>
+                                <span class="error-msg" id="error-${context}-${song.id}"></span>
+                            </div>
+                            <span>${song.artists.map(a => a.name).join(' / ')}</span>
+                            <span>${song.album}</span>
+                            <i class="action-btn fav-btn ${state.favourites.some(f => f.id === song.id) ? 'fas fa-heart favourited' : 'far fa-heart'}" data-song-id="${song.id}"></i>
+                            ${actionIcon}
+                        </div>`}).join('');
+                renderPagination(totalPages, currentPage, context);
+                updatePlaylistHighlight();
+            }
+
+            function renderPagination(totalPages, currentPage, context) {
+                const container = getPaginationContainer(context);
+                if (!container || totalPages <= 1) { if (container) container.innerHTML = ''; return; }
+                let html = `<button class="page-btn" data-page="${currentPage - 1}" ${currentPage === 1 ? 'disabled' : ''}>&laquo;</button>`;
+                let startPage = Math.max(1, currentPage - 2), endPage = Math.min(totalPages, currentPage + 2);
+                if (startPage > 1) html += `<button class="page-btn" data-page="1">1</button>${startPage > 2 ? '<span>...</span>' : ''}`;
+                for (let i = startPage; i <= endPage; i++) html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+                if (endPage < totalPages) html += `${endPage < totalPages - 1 ? '<span>...</span>' : ''}<button class="page-btn" data-page="${totalPages}">${totalPages}</button>`;
+                html += `<button class="page-btn" data-page="${currentPage + 1}" ${currentPage === totalPages ? 'disabled' : ''}>&raquo;</button>`;
+                container.innerHTML = html;
+                container.dataset.context = context;
+            }
+
+            function getPaginationContainer(context) {
+                switch (context) {
+                    case 'discover': return dom.paginationDiscover;
+                    case 'favourites': return dom.paginationFavourites;
+                    case 'history': return dom.paginationHistory;
+                    case 'local': return dom.paginationLocal;
+                    default: return null;
+                }
+            }
+
+            function renderFavourites() { renderPlaylist(state.favourites, dom.favouritesListContainer, 'favourites'); }
+            function renderHistory() { renderPlaylist(state.history, dom.historyListContainer, 'history'); }
+
+            async function loadLocalSongs() {
+                state.localPlaylist = await idbHelper.getSongs();
+                renderPlaylist(state.localPlaylist, dom.localListContainer, 'local');
+            }
+
+            async function processLocalFiles(event) {
+                const files = event.target.files;
+                if (!files.length) return;
+                for (const file of files) {
+                    const song = {
+                        id: `local_${Date.now()}_${file.name}`,
+                        name: file.name.replace(/\.[^/.]+$/, ""),
+                        artists: [{ name: "本地文件" }],
+                        album: "本地文件",
+                        blob: file,
+                        pic: 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='
+                    };
+                    await idbHelper.addSong(song);
+                }
+                await loadLocalSongs();
+                alert(`${files.length}个文件已成功添加到本地库！`);
+            }
+
+            async function deleteLocalSong(songId) {
+                if (confirm("确定要从本地库中删除这首歌曲吗？此操作不可恢复。")) {
+                    await idbHelper.deleteSong(songId);
+                    await loadLocalSongs();
+                }
+            }
+
+            async function fetchOnlineMusic() {
+                let keyword;
+                do { keyword = state.keywords[Math.floor(Math.random() * state.keywords.length)]; } while (state.keywords.length > 1 && keyword === state.lastKeyword);
+                state.lastKeyword = keyword;
+                dom.loadOnlineBtn.innerHTML = `<i class="fas fa-sync-alt fa-spin"></i> 正在加载...`;
+                dom.loadOnlineBtn.disabled = true;
+                await fetchAndDisplaySearchResults(keyword, true);
+                dom.loadOnlineBtn.innerHTML = `<i class="fas fa-satellite-dish"></i> 探索雷达 (${keyword})`;
+                dom.loadOnlineBtn.disabled = false;
+            }
+
+            async function fetchAndDisplaySearchResults(keyword, shuffle = false) {
+                dom.songListContainer.innerHTML = `<p style="padding: 15px;">正在加载 "${keyword}"...</p>`;
+                dom.paginationDiscover.innerHTML = '';
+                try {
+                    const songs = await API.getList(keyword);
+                    if (shuffle) songs.sort(() => Math.random() - 0.5);
+                    state.discoverPlaylist = songs;
+                    state.pagination.discover = 1;
+                    renderPlaylist(songs, dom.songListContainer, 'discover');
+                } catch (error) {
+                    console.error("加载在线歌曲错误:", error);
+                    dom.songListContainer.innerHTML = `<p style='padding: 15px;'>加载失败: ${error.message}</p>`;
+                }
+            }
+
+            async function playSong(index) {
+                if (index < 0 || index >= state.currentPlaylist.length) return;
+                state.currentTrackIndex = index;
+                const song = state.currentPlaylist[index];
+                updatePlayerUI(song);
+                updatePlaylistHighlight();
+                updatePlayPauseIcon(true);
+
+                try {
+                    if (song.blob && song.blob instanceof Blob) { // 播放本地歌曲
+                        if (state.currentBlobUrl) URL.revokeObjectURL(state.currentBlobUrl);
+                        state.currentBlobUrl = URL.createObjectURL(song.blob);
+                        dom.audioPlayer.src = state.currentBlobUrl;
+                    } else { // 播放在线歌曲
+                        const urlEndpoint = API.getSongUrl(song);
+                        const response = await fetch(urlEndpoint);
+                        if (!response.ok) throw new Error('网络请求失败');
+                        const urlData = await response.json();
+                        const audioUrl = urlData.url?.replace(/^http:/, 'https');
+                        if (!audioUrl) throw new Error('无法获取播放链接');
+                        dom.audioPlayer.src = audioUrl;
+                    }
+
+                    await dom.audioPlayer.play();
+                    addPlayHistory(song);
+                    renderHistory();
+                    saveStateToLocalStorage();
+                } catch (error) {
+                    console.error("播放失败:", error.message, song);
+                    const context = state.currentPlaylist === state.favourites ? 'favourites' : state.currentPlaylist === state.history ? 'history' : 'discover';
+                    const errorSpan = document.getElementById(`error-${context}-${song.id}`);
+                    if (errorSpan) errorSpan.textContent = "无法播放";
+                    updatePlayPauseIcon(false);
+                    setTimeout(() => playNext(), 2000);
+                }
+            }
+
+            async function downloadSong(song, buttonElement) {
+                buttonElement.className = 'action-btn download-btn fas fa-spinner fa-spin';
+                try {
+                    const urlEndpoint = API.getSongUrl(song);
+                    const response = await fetch(urlEndpoint);
+                    if (!response.ok) throw new Error('网络请求失败');
+                    const data = await response.json();
+                    const audioUrl = data.url?.replace(/^http:/, 'https');
+                    if (!audioUrl) throw new Error('无法获取下载链接');
+
+                    const audioResponse = await fetch(audioUrl);
+                    if (!audioResponse.ok) throw new Error(`下载资源失败: ${audioResponse.statusText}`);
+                    const blob = await audioResponse.blob();
+
+                    const songToStore = { ...song, blob: blob };
+                    await idbHelper.addSong(songToStore);
+
+                    await loadLocalSongs();
+                    alert(`《${song.name}》已成功下载到本地库！`);
+
+                } catch (error) {
+                    console.error("下载到本地库失败:", error);
+                    alert(`下载《${song.name}》失败: ${error.message}`);
+                } finally {
+                    buttonElement.className = 'action-btn download-btn fas fa-download';
+                }
+            }
+
+            function updatePlayerUI(song) {
+                if (!song) {
+                    dom.barSongTitle.textContent = '--'; dom.barSongArtist.textContent = '--';
+                    dom.barAlbumArt.src = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+                    dom.barFavBtn.dataset.songId = ''; updateFavouriteIcon(dom.barFavBtn, '');
+                    return;
+                }
+                dom.barSongTitle.textContent = song.name;
+                dom.barSongArtist.textContent = song.artists.map(a => a.name).join(' / ');
+                dom.barAlbumArt.src = song.pic;
+                dom.barFavBtn.dataset.songId = song.id;
+                updateFavouriteIcon(dom.barFavBtn, song.id);
+            }
+
+            function updatePlaylistHighlight() {
+                document.querySelectorAll('.song-item').forEach(item => {
+                    const context = item.dataset.context;
+                    const listForContext = getPlaylistByContext(context);
+                    const index = parseInt(item.dataset.index, 10);
+                    const isCurrent = state.currentPlaylist === listForContext && index === state.currentTrackIndex;
+                    item.classList.toggle('current', isCurrent);
+                });
+            }
+
+            function updatePlayPauseIcon(isPlaying) { state.isPlaying = isPlaying; dom.playPauseBtn.innerHTML = `<i class="fas fa-${isPlaying ? 'pause' : 'play'}"></i>`; }
+
+            function toggleFavourite(songId) {
+                const allSongs = [...state.discoverPlaylist, ...state.localPlaylist, ...state.history, ...state.favourites];
+                const uniqueSongs = Array.from(new Map(allSongs.map(item => [item.id, item])).values());
+                const song = uniqueSongs.find(s => s.id.toString() === songId.toString());
+                if (!song) return;
+                const favIndex = state.favourites.findIndex(fav => fav.id.toString() === songId.toString());
+                if (favIndex > -1) { state.favourites.splice(favIndex, 1); } else { state.favourites.unshift(song); }
+                const totalPages = Math.ceil(state.favourites.length / state.itemsPerPage);
+                if (state.pagination.favourites > totalPages) { state.pagination.favourites = totalPages || 1; }
+                renderAllViews();
+                if (state.currentPlaylist && state.currentPlaylist[state.currentTrackIndex]) { updatePlayerUI(state.currentPlaylist[state.currentTrackIndex]); }
+                saveStateToLocalStorage();
+            }
+
+            function updateFavouriteIcon(iconElement, songId) {
+                if (!songId) { iconElement.className = 'action-btn fav-btn far fa-heart'; return; }
+                const isFavourited = state.favourites.some(fav => fav.id.toString() === songId.toString());
+                iconElement.className = `action-btn fav-btn ${isFavourited ? 'fas fa-heart favourited' : 'far fa-heart'}`;
+            }
+
+            function togglePlayPause() { if (state.currentTrackIndex === -1 || !dom.audioPlayer.src) return; state.isPlaying ? dom.audioPlayer.pause() : dom.audioPlayer.play(); }
+            function playNext() { let i = state.currentTrackIndex + 1; if (i >= state.currentPlaylist.length) { if (state.repeatMode === 'all') i = 0; else return; } playSong(i); }
+            function playPrevious() { if (dom.audioPlayer.currentTime > 3) { dom.audioPlayer.currentTime = 0; } else { let i = state.currentTrackIndex - 1; if (i < 0) i = state.currentPlaylist.length - 1; playSong(i); } }
+            function handleSongEnd() { if (state.repeatMode === 'one') playSong(state.currentTrackIndex); else playNext(); }
+            function toggleShuffle() { /* shuffle logic needs to be implemented */ }
+            function toggleRepeat() { const m = ['none', 'all', 'one']; state.repeatMode = m[(m.indexOf(state.repeatMode) + 1) % m.length]; dom.repeatBtn.classList.toggle('active', state.repeatMode !== 'none'); dom.audioPlayer.loop = state.repeatMode === 'one'; dom.repeatBtn.innerHTML = state.repeatMode === 'one' ? '<i class="fas fa-redo-alt"></i><sup style="font-size: 0.5em;">1</sup>' : '<i class="fas fa-redo"></i>'; }
+
+            function saveStateToLocalStorage() { localStorage.setItem('musicDashboardData', JSON.stringify({ favourites: state.favourites, history: state.history })); }
+            function loadStateFromLocalStorage() {
+                const data = JSON.parse(localStorage.getItem('musicDashboardData') || '{}');
+                state.history = data.history || []; state.favourites = data.favourites || [];
+                const savedTheme = localStorage.getItem('theme');
+                const isLight = savedTheme === 'light';
+                document.body.classList.toggle('light-mode', isLight);
+                document.body.classList.toggle('dark-mode', !isLight);
+            }
+
+            function addPlayHistory(song) { state.history = state.history.filter(s => s.id !== song.id); state.history.unshift({ ...song, playedAt: new Date().toISOString() }); if (state.history.length > 500) state.history.pop(); }
+            function updateAndRenderStats() {
+                if (state.history.length === 0) { dom.statsTotalPlays.textContent = '0'; dom.statsUniqueTracks.textContent = '0'; dom.statsTopTracks.innerHTML = '<p style="padding: 15px;">暂无数据</p>'; dom.statsTopArtists.innerHTML = '<p style="padding: 15px;">暂无数据</p>'; return; };
+                const trackCounts = state.history.reduce((acc, song) => { acc[song.id] = (acc[song.id] || { ...song, count: 0 }); acc[song.id].count++; return acc; }, {});
+                const artistCounts = state.history.flatMap(s => s.artists).reduce((acc, artist) => { acc[artist.name] = (acc[artist.name] || { name: artist.name, count: 0 }); acc[artist.name].count++; return acc; }, {});
+                dom.statsTotalPlays.textContent = state.history.length;
+                dom.statsUniqueTracks.textContent = new Set(state.history.map(s => s.id)).size;
+                dom.statsTopTracks.innerHTML = `<div class="song-list-header"><span>#</span><span>歌曲</span><span>歌手</span><span>播放次数</span><span></span></div>${Object.values(trackCounts).sort((a, b) => b.count - a.count).slice(0, 5).map((s, i) => `<div class="song-item"><span>${i + 1}</span><span class="song-title">${s.name}</span><span>${s.artists.map(a => a.name).join(' / ')}</span><span>${s.count} 次</span><span></span></div>`).join('')}`;
+                dom.statsTopArtists.innerHTML = `<div class="song-list-header"><span>#</span><span>歌手</span><span></span><span>播放次数</span><span></span></div>${Object.values(artistCounts).sort((a, b) => b.count - a.count).slice(0, 5).map((a, i) => `<div class="song-item"><span>${i + 1}</span><span class="song-title">${a.name}</span><span></span><span>${a.count} 次</span><span></span></div>`).join('')}`;
+            }
+            function updateProgress() { const { currentTime, duration } = dom.audioPlayer; if (duration) { dom.progress.style.width = `${(currentTime / duration) * 100}%`; dom.currentTime.textContent = formatTime(duration ? currentTime : 0); } }
+            function seek(e) { const duration = dom.audioPlayer.duration; if (duration) dom.audioPlayer.currentTime = (e.offsetX / dom.progressBar.clientWidth) * duration; }
+            function formatTime(seconds) { const min = Math.floor(seconds / 60); const sec = Math.floor(seconds % 60); return `${min}:${sec < 10 ? '0' : ''}${sec}`; }
+
+            init();
+        });
+    </script>
+
+</body>
+
+</html>
