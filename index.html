@@ -1,22 +1,358 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>见雅</title>
+    <title>鹤的个人主页 - 开发者 & 音乐爱好者</title>
+    <meta name="description" content="欢迎来到我的个人主页！我是一名热爱编程和音乐的开发者，在这里分享我的项目和创意。">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
 </head>
 
 <body>
-    <div class="zhuti">
-        <div class="box">
-            <img src="img\1.png" alt="hutao">
-            <span>❤️刻晴❤️</span>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-code"></i>
+                <span>鹤的数字世界</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#home" class="nav-link active">首页</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#about" class="nav-link">关于我</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#projects" class="nav-link">项目展示</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#music" class="nav-link">音乐天地</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#blog" class="nav-link">技术博客</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#contact" class="nav-link">联系我</a>
+                </li>
+            </ul>
+            <div class="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
         </div>
-    </div>
-    <a href="music.html">享受音乐</a>
-    <a href="jianyue.html">简约版</a>
+    </nav>
+
+    <!-- 主页英雄区域 -->
+    <section id="home" class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1 class="hero-title">
+                        你好，我是 <span class="highlight">鹤</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        <span class="typing-text"></span>
+                    </p>
+                    <p class="hero-description">
+                        热爱编程的开发者，音乐爱好者，创意探索者。在这里分享我的技术项目、音乐作品和思考感悟。
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="#projects" class="btn btn-primary">
+                            <i class="fas fa-rocket"></i> 查看项目
+                        </a>
+                        <a href="#music" class="btn btn-secondary">
+                            <i class="fas fa-music"></i> 音乐播放器
+                        </a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="avatar-container">
+                        <div class="avatar">
+                            <i class="fas fa-user-astronaut"></i>
+                        </div>
+                        <div class="avatar-bg"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="scroll-indicator">
+                <i class="fas fa-chevron-down"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- 关于我 -->
+    <section id="about" class="about">
+        <div class="container">
+            <h2 class="section-title">关于我</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <h3>编程与音乐的完美融合</h3>
+                    <p>
+                        我是一名充满激情的开发者，对前端开发、用户体验设计和音乐技术有着浓厚的兴趣。
+                        我相信代码不仅是逻辑的表达，更是艺术创作的媒介。
+                    </p>
+                    <p>
+                        在编程之余，我喜欢创作音乐，探索声音与数字世界的无限可能。
+                        这个网站就是我将技术与艺术结合的最好证明。
+                    </p>
+                    <div class="skills">
+                        <h4>技能标签</h4>
+                        <div class="skill-tags">
+                            <span class="skill-tag">JavaScript</span>
+                            <span class="skill-tag">HTML/CSS</span>
+                            <span class="skill-tag">React</span>
+                            <span class="skill-tag">Node.js</span>
+                            <span class="skill-tag">音乐制作</span>
+                            <span class="skill-tag">UI/UX设计</span>
+                            <span class="skill-tag">创意编程</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">3+</div>
+                        <div class="stat-label">年开发经验</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">10+</div>
+                        <div class="stat-label">完成项目</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">50+</div>
+                        <div class="stat-label">音乐作品</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 项目展示 -->
+    <section id="projects" class="projects">
+        <div class="container">
+            <h2 class="section-title">项目展示</h2>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-image">
+                        <i class="fas fa-music"></i>
+                    </div>
+                    <div class="project-content">
+                        <h3>在线音乐播放器</h3>
+                        <p>功能完整的Web音乐播放器，支持在线搜索、本地播放、歌词同步等功能。</p>
+                        <div class="project-tech">
+                            <span>JavaScript</span>
+                            <span>HTML5 Audio</span>
+                            <span>CSS3</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="music.html" class="project-link">
+                                <i class="fas fa-external-link-alt"></i> 查看演示
+                            </a>
+                            <a href="jianyue.html" class="project-link">
+                                <i class="fas fa-mobile-alt"></i> 简约版
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div class="project-content">
+                        <h3>个人博客系统</h3>
+                        <p>基于现代Web技术构建的博客平台，支持Markdown编辑、标签分类等功能。</p>
+                        <div class="project-tech">
+                            <span>React</span>
+                            <span>Node.js</span>
+                            <span>MongoDB</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="#blog" class="project-link">
+                                <i class="fas fa-external-link-alt"></i> 即将上线
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <div class="project-content">
+                        <h3>创意作品集</h3>
+                        <p>展示我的创意编程作品，包括生成艺术、交互式可视化等实验性项目。</p>
+                        <div class="project-tech">
+                            <span>Canvas</span>
+                            <span>WebGL</span>
+                            <span>P5.js</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="project-link">
+                                <i class="fas fa-external-link-alt"></i> 敬请期待
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 音乐天地 -->
+    <section id="music" class="music-section">
+        <div class="container">
+            <h2 class="section-title">音乐天地</h2>
+            <div class="music-content">
+                <div class="music-text">
+                    <h3>音乐是我的第二语言</h3>
+                    <p>
+                        音乐对我来说不仅是爱好，更是表达创意的重要方式。我开发了多个音乐相关的Web应用，
+                        从简单的播放器到复杂的音乐可视化工具。
+                    </p>
+                    <p>
+                        探索我的音乐世界，体验技术与艺术的完美融合。
+                    </p>
+                    <div class="music-features">
+                        <div class="feature-item">
+                            <i class="fas fa-headphones"></i>
+                            <span>在线音乐播放</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-microphone"></i>
+                            <span>歌词同步显示</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-download"></i>
+                            <span>本地音乐管理</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-chart-line"></i>
+                            <span>播放统计分析</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="music-preview">
+                    <div class="music-player-preview">
+                        <div class="player-header">
+                            <i class="fas fa-music"></i>
+                            <span>音乐播放器</span>
+                        </div>
+                        <div class="player-controls">
+                            <i class="fas fa-backward"></i>
+                            <i class="fas fa-play"></i>
+                            <i class="fas fa-forward"></i>
+                        </div>
+                        <div class="player-progress"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="music-links">
+                <a href="music.html" class="btn btn-primary">
+                    <i class="fas fa-play"></i> 完整版播放器
+                </a>
+                <a href="jianyue.html" class="btn btn-secondary">
+                    <i class="fas fa-mobile-alt"></i> 简约版播放器
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 技术博客 -->
+    <section id="blog" class="blog">
+        <div class="container">
+            <h2 class="section-title">技术博客</h2>
+            <div class="blog-content">
+                <div class="blog-text">
+                    <h3>分享技术见解与思考</h3>
+                    <p>
+                        在这里我分享开发过程中的经验总结、技术探索和学习心得。
+                        涵盖前端开发、音乐技术、创意编程等多个领域。
+                    </p>
+                    <p>
+                        <strong>即将推出...</strong> 我正在构建一个现代化的博客系统，
+                        敬请期待我的第一篇技术文章！
+                    </p>
+                </div>
+                <div class="blog-preview">
+                    <div class="blog-card">
+                        <div class="blog-meta">
+                            <span class="blog-date">2024-01-15</span>
+                            <span class="blog-category">前端开发</span>
+                        </div>
+                        <h4>构建现代化的Web音乐播放器</h4>
+                        <p>探讨如何使用现代Web技术构建功能完整的音乐播放器...</p>
+                    </div>
+                    <div class="blog-card">
+                        <div class="blog-meta">
+                            <span class="blog-date">2024-01-10</span>
+                            <span class="blog-category">音乐技术</span>
+                        </div>
+                        <h4>Web Audio API入门指南</h4>
+                        <p>深入了解Web Audio API的强大功能，创建令人惊叹的音频应用...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 联系我 -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">联系我</h2>
+            <div class="contact-content">
+                <div class="contact-text">
+                    <h3>让我们一起创造精彩</h3>
+                    <p>
+                        如果你对我的项目感兴趣，或者想要合作交流，
+                        欢迎通过以下方式联系我。我期待与志同道合的朋友一起探索技术与艺术的无限可能。
+                    </p>
+                </div>
+                <div class="contact-links">
+                    <a href="https://github.com/heshisan522" class="contact-link" target="_blank">
+                        <i class="fab fa-github"></i>
+                        <span>GitHub</span>
+                    </a>
+                    <a href="mailto:your-email@example.com" class="contact-link">
+                        <i class="fas fa-envelope"></i>
+                        <span>Email</span>
+                    </a>
+                    <a href="#" class="contact-link">
+                        <i class="fab fa-twitter"></i>
+                        <span>Twitter</span>
+                    </a>
+                    <a href="#" class="contact-link">
+                        <i class="fab fa-linkedin"></i>
+                        <span>LinkedIn</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-text">
+                    <p>&copy; 2024 鹤的数字世界. 用 ❤️ 和代码构建</p>
+                </div>
+                <div class="footer-links">
+                    <a href="#home">首页</a>
+                    <a href="#projects">项目</a>
+                    <a href="#music">音乐</a>
+                    <a href="#contact">联系</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
 
 </html>

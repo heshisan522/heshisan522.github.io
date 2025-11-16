@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>技术博客 - 鹤的数字世界</title>
+    <meta name="description" content="分享前端开发、音乐技术、创意编程等技术见解与思考">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        /* 博客页面特有样式 */
+        .blog-hero {
+            background: var(--gradient-primary);
+            padding: 120px 0 80px;
+            text-align: center;
+            color: var(--text-white);
+        }
+
+        .blog-hero h1 {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .blog-hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .blog-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: var(--spacing-xl) var(--spacing-md);
+        }
+
+        .blog-filters {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-xl);
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid var(--primary-color);
+            background: transparent;
+            color: var(--primary-color);
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--primary-color);
+            color: var(--text-white);
+        }
+
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .blog-post-card {
+            background: var(--bg-section);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .blog-post-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .blog-post-image {
+            height: 200px;
+            background: var(--gradient-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--text-white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .blog-post-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.3));
+        }
+
+        .blog-post-content {
+            padding: var(--spacing-md);
+        }
+
+        .blog-post-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-sm);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .blog-post-category {
+            background: var(--primary-color);
+            color: var(--text-white);
+            padding: 2px 8px;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+        }
+
+        .blog-post-title {
+            font-size: 1.3rem;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+            line-height: 1.4;
+        }
+
+        .blog-post-excerpt {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .blog-post-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .blog-post-tags {
+            display: flex;
+            gap: var(--spacing-xs);
+            flex-wrap: wrap;
+        }
+
+        .blog-post-tag {
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            padding: 2px 6px;
+            border-radius: var(--radius-sm);
+            font-size: 0.7rem;
+        }
+
+        .read-more {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: gap 0.3s ease;
+        }
+
+        .read-more:hover {
+            gap: 8px;
+        }
+
+        .blog-pagination {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-xl);
+        }
+
+        .page-btn {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-section);
+            color: var(--text-secondary);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .page-btn:hover,
+        .page-btn.active {
+            background: var(--primary-color);
+            color: var(--text-white);
+            border-color: var(--primary-color);
+        }
+
+        .blog-sidebar {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: var(--spacing-xl);
+            margin-top: var(--spacing-xl);
+        }
+
+        .sidebar-section {
+            background: var(--bg-section);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .sidebar-title {
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .popular-posts {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .popular-post {
+            display: flex;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            transition: background 0.3s ease;
+            cursor: pointer;
+        }
+
+        .popular-post:hover {
+            background: var(--bg-card);
+        }
+
+        .popular-post-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            min-width: 30px;
+        }
+
+        .popular-post-info h4 {
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .popular-post-info span {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .tag-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-xs);
+        }
+
+        .cloud-tag {
+            padding: 6px 12px;
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border-radius: var(--radius-full);
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .cloud-tag:hover {
+            background: var(--primary-color);
+            color: var(--text-white);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .blog-hero h1 {
+                font-size: 2rem;
+            }
+
+            .blog-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .blog-sidebar {
+                grid-template-columns: 1fr;
+            }
+
+            .blog-filters {
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding-bottom: var(--spacing-sm);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-code"></i>
+                <span>鹤的数字世界</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">首页</a>
+                </li>
+                <li class="nav-item">
+                    <a href="index.html#about" class="nav-link">关于我</a>
+                </li>
+                <li class="nav-item">
+                    <a href="index.html#projects" class="nav-link">项目展示</a>
+                </li>
+                <li class="nav-item">
+                    <a href="index.html#music" class="nav-link">音乐天地</a>
+                </li>
+                <li class="nav-item">
+                    <a href="blog.html" class="nav-link active">技术博客</a>
+                </li>
+                <li class="nav-item">
+                    <a href="index.html#contact" class="nav-link">联系我</a>
+                </li>
+            </ul>
+            <div class="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 博客英雄区域 -->
+    <section class="blog-hero">
+        <div class="container">
+            <h1>技术博客</h1>
+            <p>分享前端开发、音乐技术、创意编程等技术见解与思考</p>
+        </div>
+    </section>
+
+    <!-- 博客内容 -->
+    <main class="blog-container">
+        <!-- 分类筛选 -->
+        <div class="blog-filters">
+            <button class="filter-btn active" data-category="all">全部</button>
+            <button class="filter-btn" data-category="frontend">前端开发</button>
+            <button class="filter-btn" data-category="music">音乐技术</button>
+            <button class="filter-btn" data-category="creative">创意编程</button>
+            <button class="filter-btn" data-category="tutorial">教程分享</button>
+        </div>
+
+        <!-- 博客文章网格 -->
+        <div class="blog-grid" id="blogGrid">
+            <!-- 文章卡片1 -->
+            <article class="blog-post-card" data-category="frontend">
+                <div class="blog-post-image">
+                    <i class="fas fa-music"></i>
+                </div>
+                <div class="blog-post-content">
+                    <div class="blog-post-meta">
+                        <span class="blog-post-category">前端开发</span>
+                        <span>2024-01-15</span>
+                    </div>
+                    <h3 class="blog-post-title">构建现代化的Web音乐播放器</h3>
+                    <p class="blog-post-excerpt">
+                        探讨如何使用现代Web技术构建功能完整的音乐播放器，包括音频处理、歌词同步、播放列表管理等核心功能的实现。
+                    </p>
+                    <div class="blog-post-footer">
+                        <div class="blog-post-tags">
+                            <span class="blog-post-tag">JavaScript</span>
+                            <span class="blog-post-tag">Web Audio</span>
+                            <span class="blog-post-tag">CSS3</span>
+                        </div>
+                        <a href="#" class="read-more">
+                            阅读更多 <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 文章卡片2 -->
+            <article class="blog-post-card" data-category="music">
+                <div class="blog-post-image">
+                    <i class="fas fa-headphones"></i>
+                </div>
+                <div class="blog-post-content">
+                    <div class="blog-post-meta">
+                        <span class="blog-post-category">音乐技术</span>
+                        <span>2024-01-10</span>
+                    </div>
+                    <h3 class="blog-post-title">Web Audio API入门指南</h3>
+                    <p class="blog-post-excerpt">
+                        深入了解Web Audio API的强大功能，学习如何创建令人惊叹的音频应用，从基础概念到高级音频处理技术。
+                    </p>
+                    <div class="blog-post-footer">
+                        <div class="blog-post-tags">
+                            <span class="blog-post-tag">Web Audio API</span>
+                            <span class="blog-post-tag">音频处理</span>
+                        </div>
+                        <a href="#" class="read-more">
+                            阅读更多 <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 文章卡片3 -->
+            <article class="blog-post-card" data-category="creative">
+                <div class="blog-post-image">
+                    <i class="fas fa-palette"></i>
+                </div>
+                <div class="blog-post-content">
+                    <div class="blog-post-meta">
+                        <span class="blog-post-category">创意编程</span>
+                        <span>2024-01-05</span>
+                    </div>
+                    <h3 class="blog-post-title">Canvas动画与交互艺术</h3>
+                    <p class="blog-post-excerpt">
+                        探索Canvas API的创意应用，学习如何创建令人惊叹的视觉效果和交互式艺术作品。
+                    </p>
+                    <div class="blog-post-footer">
+                        <div class="blog-post-tags">
+                            <span class="blog-post-tag">Canvas</span>
+                            <span class="blog-post-tag">动画</span>
+                            <span class="blog-post-tag">创意</span>
+                        </div>
+                        <a href="#" class="read-more">
+                            阅读更多 <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 文章卡片4 -->
+            <article class="blog-post-card" data-category="tutorial">
+                <div class="blog-post-image">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="blog-post-content">
+                    <div class="blog-post-meta">
+                        <span class="blog-post-category">教程分享</span>
+                        <span>2023-12-28</span>
+                    </div>
+                    <h3 class="blog-post-title">响应式设计最佳实践</h3>
+                    <p class="blog-post-excerpt">
+                        从移动优先到渐进增强，全面掌握现代响应式Web设计的核心原则和实用技巧。
+                    </p>
+                    <div class="blog-post-footer">
+                        <div class="blog-post-tags">
+                            <span class="blog-post-tag">响应式</span>
+                            <span class="blog-post-tag">CSS Grid</span>
+                            <span class="blog-post-tag">Flexbox</span>
+                        </div>
+                        <a href="#" class="read-more">
+                            阅读更多 <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 文章卡片5 -->
+            <article class="blog-post-card" data-category="frontend">
+                <div class="blog-post-image">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <div class="blog-post-content">
+                    <div class="blog-post-meta">
+                        <span class="blog-post-category">前端开发</span>
+                        <span>2023-12-20</span>
+                    </div>
+                    <h3 class="blog-post-title">现代JavaScript性能优化</h3>
+                    <p class="blog-post-excerpt">
+                        深入分析JavaScript性能瓶颈，学习实用的优化技巧和工具，让你的Web应用飞起来。
+                    </p>
+                    <div class="blog-post-footer">
+                        <div class="blog-post-tags">
+                            <span class="blog-post-tag">JavaScript</span>
+                            <span class="blog-post-tag">性能优化</span>
+                            <span class="blog-post-tag">V8</span>
+                        </div>
+                        <a href="#" class="read-more">
+                            阅读更多 <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 文章卡片6 -->
+            <article class="blog-post-card" data-category="music">
+                <div class="blog-post-image">
+                    <i class="fas fa-wave-square"></i>
+                </div>
+                <div class="blog-post-content">
+                    <div class="blog-post-meta">
+                        <span class="blog-post-category">音乐技术</span>
+                        <span>2023-12-15</span>
+                    </div>
+                    <h3 class="blog-post-title">音频可视化技术探索</h3>
+                    <p class="blog-post-excerpt">
+                        学习如何将音频数据转换为视觉艺术，创建令人惊叹的音乐可视化效果。
+                    </p>
+                    <div class="blog-post-footer">
+                        <div class="blog-post-tags">
+                            <span class="blog-post-tag">音频可视化</span>
+                            <span class="blog-post-tag">WebGL</span>
+                            <span class="blog-post-tag">Three.js</span>
+                        </div>
+                        <a href="#" class="read-more">
+                            阅读更多 <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <!-- 分页 -->
+        <div class="blog-pagination">
+            <button class="page-btn" disabled><i class="fas fa-chevron-left"></i></button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">3</button>
+            <button class="page-btn"><i class="fas fa-chevron-right"></i></button>
+        </div>
+
+        <!-- 侧边栏 -->
+        <div class="blog-sidebar">
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">热门文章</h3>
+                <div class="popular-posts">
+                    <div class="popular-post">
+                        <div class="popular-post-number">1</div>
+                        <div class="popular-post-info">
+                            <h4>构建现代化的Web音乐播放器</h4>
+                            <span>1,234 次阅读</span>
+                        </div>
+                    </div>
+                    <div class="popular-post">
+                        <div class="popular-post-number">2</div>
+                        <div class="popular-post-info">
+                            <h4>Web Audio API入门指南</h4>
+                            <span>987 次阅读</span>
+                        </div>
+                    </div>
+                    <div class="popular-post">
+                        <div class="popular-post-number">3</div>
+                        <div class="popular-post-info">
+                            <h4>Canvas动画与交互艺术</h4>
+                            <span>756 次阅读</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">标签云</h3>
+                <div class="tag-cloud">
+                    <span class="cloud-tag">JavaScript</span>
+                    <span class="cloud-tag">CSS3</span>
+                    <span class="cloud-tag">HTML5</span>
+                    <span class="cloud-tag">Web Audio</span>
+                    <span class="cloud-tag">Canvas</span>
+                    <span class="cloud-tag">响应式设计</span>
+                    <span class="cloud-tag">性能优化</span>
+                    <span class="cloud-tag">音频可视化</span>
+                    <span class="cloud-tag">创意编程</span>
+                    <span class="cloud-tag">WebGL</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-text">
+                    <p>&copy; 2024 鹤的数字世界. 用 ❤️ 和代码构建</p>
+                </div>
+                <div class="footer-links">
+                    <a href="index.html">首页</a>
+                    <a href="index.html#projects">项目</a>
+                    <a href="index.html#music">音乐</a>
+                    <a href="index.html#contact">联系</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 博客页面特有功能
+        document.addEventListener('DOMContentLoaded', function () {
+            // 分类筛选功能
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const blogPosts = document.querySelectorAll('.blog-post-card');
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    // 更新按钮状态
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const category = this.dataset.category;
+
+                    // 筛选文章
+                    blogPosts.forEach(post => {
+                        if (category === 'all' || post.dataset.category === category) {
+                            post.style.display = 'block';
+                            setTimeout(() => {
+                                post.style.opacity = '1';
+                                post.style.transform = 'translateY(0)';
+                            }, 100);
+                        } else {
+                            post.style.opacity = '0';
+                            post.style.transform = 'translateY(20px)';
+                            setTimeout(() => {
+                                post.style.display = 'none';
+                            }, 300);
+                        }
+                    });
+                });
+            });
+
+            // 文章卡片点击效果
+            blogPosts.forEach(post => {
+                post.addEventListener('click', function (e) {
+                    if (!e.target.closest('.read-more')) {
+                        // 模拟跳转到文章详情页
+                        console.log('跳转到文章详情页');
+                    }
+                });
+            });
+
+            // 分页功能
+            const pageBtns = document.querySelectorAll('.page-btn');
+            pageBtns.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    if (!this.disabled) {
+                        pageBtns.forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                        // 这里可以添加实际的分页逻辑
+                        console.log('切换到页面:', this.textContent);
+                    }
+                });
+            });
+
+            // 标签云点击
+            const cloudTags = document.querySelectorAll('.cloud-tag');
+            cloudTags.forEach(tag => {
+                tag.addEventListener('click', function () {
+                    // 可以实现标签搜索功能
+                    console.log('搜索标签:', this.textContent);
+                });
+            });
+
+            // 热门文章点击
+            const popularPosts = document.querySelectorAll('.popular-post');
+            popularPosts.forEach(post => {
+                post.addEventListener('click', function () {
+                    console.log('跳转到热门文章');
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
